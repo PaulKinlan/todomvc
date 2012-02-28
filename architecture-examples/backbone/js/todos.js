@@ -8,6 +8,18 @@ $(function(){
 
   // Todo Model
   // ----------
+  var databasev1 = {
+    id: "todo-database",
+    description: "The database for the Todo's",
+    migrations: [{
+      version: 1,
+      migrate: function (transaction, next) {
+        var store = transaction.db.createObjectStore("todos");
+        next();
+      }
+    }]
+  };
+
 
   // Our basic **Todo** model has `content`, `order`, and `done` attributes.
   var Todo = Backbone.Model.extend({
@@ -33,7 +45,10 @@ $(function(){
     // Remove this Todo from *localStorage* and delete its view.
     clear: function() {
       this.destroy();
-    }
+    },
+
+    database: databasev1,
+    storeName: "todos" 
 
   });
 
@@ -48,7 +63,8 @@ $(function(){
     model: Todo,
 
     // Save all of the todo items under the `"todos"` namespace.
-    localStorage: new Store("todos-backbone"),
+    database: databasev1,
+    storeName: "todos",
 
     // Filter down the list of all todo items that are finished.
     done: function() {
